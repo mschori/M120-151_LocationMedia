@@ -1,0 +1,2 @@
+- callback-funktion einfügen für edit von locations
+- locaton-create-update-modal überarbeiten
