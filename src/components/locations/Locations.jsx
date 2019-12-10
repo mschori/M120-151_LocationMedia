@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import AuthentificationService from "../authentication/AuthentificationService";
 
 class Locations extends Component {
 
@@ -9,7 +10,8 @@ class Locations extends Component {
                 {
                     cardTitle: 'Ä charte-titu',
                     cardText: 'Dr text derzue',
-                    cardImage: 'https://unicheck.unicum.de/sites/default/files/styles/artikel_hauptbild/public/artikel/image/studieren-in-der-schweiz-alpenlandschaft-bergsee-thinkstockphotos-521200806-bluejayphoto.jpg?itok=FmFfUYCN'
+                    cardImage: 'https://unicheck.unicum.de/sites/default/files/styles/artikel_hauptbild/public/artikel/image/studieren-in-der-schweiz-alpenlandschaft-bergsee-thinkstockphotos-521200806-bluejayphoto.jpg?itok=FmFfUYCN',
+                    userId: 3,
                 },
             ]
         }
@@ -22,7 +24,7 @@ class Locations extends Component {
                     this.state.locations.map(
                         locations =>
                             <LocationCard cardTitle={locations.cardTitle} cardText={locations.cardText}
-                                          cardImage={locations.cardImage}/>
+                                          cardImage={locations.cardImage} userId={locations.userId}/>
                     )
                 }
             </div>
@@ -35,11 +37,10 @@ class LocationCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            myLocation: true,
             cardText: this.props.cardText,
             cardTitle: this.props.cardTitle,
             cardImage: this.props.cardImage,
-        }
+        };
     }
 
     render() {
@@ -51,7 +52,7 @@ class LocationCard extends Component {
                 <div className="card-body">
                     <h5 className="card-title">{this.state.cardTitle}</h5>
                     <p className="card-text">{this.state.cardText}</p>
-                    {this.state.myLocation &&
+                    {AuthentificationService.authenticatedLocation(this.props.userId) &&
                     <div className="text-right">
                         <button className="btn btn-dark mr-2">Edit</button>
                         <button className="btn btn-danger">Delete</button>

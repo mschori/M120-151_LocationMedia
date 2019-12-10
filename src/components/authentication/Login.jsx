@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import './AuthentificationService.js';
+import AuthentificationService from "./AuthentificationService";
 
 class Login extends Component {
 
@@ -36,7 +38,9 @@ class Login extends Component {
 
     login = () => {
         if (this.state.username === 'Michael' && this.state.password === 'sml12345') {
-            window.history.replaceState('/locations', 'Locations', '/locations/' + 3);
+            let userId = 3;
+            AuthentificationService.registerSuccessfullLogin(this.state.username, userId);
+            window.history.replaceState('/locations', 'Locations', '/locations/' + userId);
             document.location.reload();
         } else {
             this.setState({hasLoginFailed: true})
