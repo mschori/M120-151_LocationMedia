@@ -9,6 +9,7 @@ class Navigationbar extends Component {
         super(props);
         this.state = {
             logedIn: false,
+            myUserId: AuthentificationService.getUserId(),
         }
     }
 
@@ -47,6 +48,7 @@ class Navigationbar extends Component {
 
     logout = () => {
         AuthentificationService.logout();
+        document.location.reload();
     }
 }
 

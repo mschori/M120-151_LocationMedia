@@ -1,2 +1,3 @@
-- callback-funktion einfügen für edit von locations
-- locaton-create-update-modal überarbeiten
+- Effektive URL angeben
+- Rückmeldung der axios-requests auswerten
+- Image-handling überarbeiten. image-upload, ect.
