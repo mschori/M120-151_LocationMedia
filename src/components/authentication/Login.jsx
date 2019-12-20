@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './AuthentificationService.js';
 import AuthentificationService from "./AuthentificationService";
+import axios from 'axios';
 
 class Login extends Component {
 
@@ -37,14 +38,23 @@ class Login extends Component {
     };
 
     login = () => {
-        if (this.state.username === 'Michael' && this.state.password === 'sml12345') {
-            let userId = 3;
-            AuthentificationService.registerSuccessfullLogin(this.state.username, userId);
-            window.history.replaceState('/locations', 'Locations', '/locations/' + userId);
-            document.location.reload();
-        } else {
-            this.setState({hasLoginFailed: true})
-        }
+
+        let data = {username: this.state.username, password: this.state.password};
+
+        axios.post('http://localhost:8080/users/login', data)
+            .then(res => {
+                if (res.data.loginSuccessfull) {
+                    let userId = res.data.id;
+                    AuthentificationService.registerSuccessfullLogin(this.state.username, userId);
+                    window.history.replaceState('/locations', 'Locations', '/locations/' + userId);
+                    document.location.reload();
+                } else {
+                    this.setState({hasLoginFailed: true})
+                }
+            })
+            .catch(res => {
+                this.setState({hasLoginFailed: true})
+            });
     }
 }
 

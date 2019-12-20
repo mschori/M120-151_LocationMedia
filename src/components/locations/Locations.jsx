@@ -16,32 +16,17 @@ class Locations extends Component {
             showAlert: false,
             alertType: 'alert alert-success',
             alertText: '',
-            locations: [
-                {
-                    locationId: 1,
-                    cardTitle: 'Ä charte-titu',
-                    locationAddress: 'züri',
-                    cardText: 'Dr text derzue',
-                    cardImage: 'https://unicheck.unicum.de/sites/default/files/styles/artikel_hauptbild/public/artikel/image/studieren-in-der-schweiz-alpenlandschaft-bergsee-thinkstockphotos-521200806-bluejayphoto.jpg?itok=FmFfUYCN',
-                    userId: 3,
-                },
-                {
-                    locationId: 2,
-                    cardTitle: 'Ä charte-titu',
-                    locationAddress: 'lyss',
-                    cardText: 'Dr text derzue',
-                    cardImage: 'https://unicheck.unicum.de/sites/default/files/styles/artikel_hauptbild/public/artikel/image/studieren-in-der-schweiz-alpenlandschaft-bergsee-thinkstockphotos-521200806-bluejayphoto.jpg?itok=FmFfUYCN',
-                    userId: 3,
-                },
-            ]
+            locations: [],
         }
+    }
+
+    componentDidMount() {
+        this.getLocations();
     }
 
     render() {
         return (
             <div className="container mt-5">
-
-                {this.getLocations()}
 
                 {this.state.showAlert &&
                 <div className={this.state.alertType} role="alert">
@@ -70,17 +55,17 @@ class Locations extends Component {
                             <div className="modal-body">
                                 <input type="hidden" name="location_id" value={this.state.form_location_id}/>
                                 <label htmlFor="name"><b>Title</b></label>
-                                <input type="text" name="name" className="form-control" id="title"
-                                       value={this.state.form_title}/>
+                                <input type="text" name="form_title" className="form-control" id="title"
+                                       value={this.state.form_title} onChange={this.formOnChangeHandler}/>
                                 <label htmlFor="address" className="mt-2"><b>Address</b></label>
-                                <input type="text" name="address" className="form-control" id="address"
-                                       value={this.state.form_address}/>
+                                <input type="text" name="form_address" className="form-control" id="address"
+                                       value={this.state.form_address} onChange={this.formOnChangeHandler}/>
                                 <label htmlFor="description" className="mt-2"><b>Description</b></label>
-                                <input type="text" name="description" className="form-control" id="description"
-                                       value={this.state.form_description}/>
+                                <input type="text" name="form_description" className="form-control" id="description"
+                                       value={this.state.form_description} onChange={this.formOnChangeHandler}/>
                                 <label htmlFor="image" className="mt-2"><b>Image</b></label>
-                                <input type="text" name="image" className="form-control" id="image"
-                                       value={this.state.form_image}/>
+                                <input type="text" name="form_image" className="form-control" id="image"
+                                       value={this.state.form_image} onChange={this.formOnChangeHandler}/>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -95,10 +80,10 @@ class Locations extends Component {
                 {
                     this.state.locations.map(
                         locations =>
-                            <LocationCard locationId={locations.locationId} cardTitle={locations.cardTitle}
-                                          cardText={locations.cardText}
-                                          cardImage={locations.cardImage} userId={locations.userId}
-                                          locationAddress={locations.locationAddress}
+                            <LocationCard key={locations.id} locationId={locations.id} cardTitle={locations.name}
+                                          cardText={locations.description}
+                                          cardImage={locations.imagename} userId={locations.fk_user}
+                                          locationAddress={locations.address}
                                           editLocation={this.editLocation} deleteLocation={this.deleteLocation}/>
                     )
                 }
@@ -106,13 +91,20 @@ class Locations extends Component {
         );
     }
 
+    formOnChangeHandler = (event) => {
+        const name = event.target.name;
+        this.setState({[name]: event.target.value});
+    };
+
     getLocations = () => {
         let uid = this.props.match.params.uid;
-        axios.get('https://localhost:3000/locations/' + uid)
+        axios.get('http://localhost:8080/users/' + uid + '/locations')
             .then(res => {
-                const locations = res.data;
-                this.setState({locations: locations})
-            });
+                this.setState({locations: res.data})
+            })
+            .catch(error => {
+                // Error-Message???
+            })
     };
 
     createLocation = () => {
@@ -145,47 +137,51 @@ class Locations extends Component {
             return;
         }
 
-        axios.delete('https://localhost:3000/locations/' + locationId)
+        axios.delete('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + locationId)
             .then(res => {
-                // Auswerten der Antwort
-                //
                 this.setState({
                     showAlert: true,
                     alertType: 'alert alert-success',
                     alertText: 'Location successfully deleted!',
                 });
+            })
+            .catch(res => {
+                // Error-Message ???
             });
     };
 
     sendCreateEdit = () => {
         let data = {
-            title: '',
-            address: '',
-            description: '',
-            image: '',
+            name: this.state.form_title,
+            address: this.state.form_address,
+            description: this.state.form_description,
+            imagename: this.state.form_image,
+            fk_user: AuthentificationService.getUserId(),
         };
 
         if (this.state.form_type === 'new') {
-            axios.post('https://localhost:3000/locations/', {data})
+            axios.post('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations', {data})
                 .then(res => {
-                    // Auswerten der Antwort
-                    //
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
                         alertText: 'Location successfully created!',
                     });
+                })
+                .catch(res => {
+                    // Fehlermessage ???
                 });
         } else if (this.state.form_type === 'update') {
-            axios.put('https://localhost:3000/locations/' + this.state.form_location_id, {data})
+            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, {data})
                 .then(res => {
-                    // Auswerten der Antwort
-                    //
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
                         alertText: 'Location successfully updated!',
                     });
+                })
+                .catch(res => {
+                    // Error-Message ????
                 });
         }
     }
