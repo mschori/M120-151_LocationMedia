@@ -1,20 +1,18 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from "axios";
 
 class Users extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            users: [
-                {
-                    userId: 1,
-                    username: 'Michael',
-                    userImage: 'https://sunlimetech.com/portfolio/boot4menu/assets/imgs/team/img_01.png',
-                    countLocations: 2
-                }
-            ]
+            users: [],
         }
+    }
+
+    componentDidMount() {
+        this.getUsers();
     }
 
     render() {
@@ -23,13 +21,23 @@ class Users extends Component {
                 {
                     this.state.users.map(
                         users =>
-                            <UserCard userId={users.userId} username={users.username} userImage={users.userImage}
+                            <UserCard userId={users.id} username={users.username} userImage={users.imagename}
                                       countLocations={users.countLocations}/>
                     )
                 }
             </div>
         );
     }
+
+    getUsers = () => {
+        axios.get('http://localhost:8080/users')
+            .then(res => {
+                this.setState({users: res.data})
+            })
+            .catch(error => {
+                // Error-Message???
+            })
+    };
 }
 
 class UserCard extends Component {

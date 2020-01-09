@@ -64,11 +64,13 @@ class Locations extends Component {
                                 <input type="text" name="form_description" className="form-control" id="description"
                                        value={this.state.form_description} onChange={this.formOnChangeHandler}/>
                                 <label htmlFor="image" className="mt-2"><b>Image</b></label>
-                                <input type="text" name="form_image" className="form-control" id="image"
-                                       value={this.state.form_image} onChange={this.formOnChangeHandler}/>
+                                <input type="file" id="image" name="form_image" accept="image/png, image/jpeg"
+                                       className="form-control" onChange={this.handleImageChange} required/>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal"
+                                        id="modalCloseButton">Close
+                                </button>
                                 <button type="button" className="btn btn-primary"
                                         onClick={this.sendCreateEdit}>Crate/Update
                                 </button>
@@ -91,9 +93,21 @@ class Locations extends Component {
         );
     }
 
+    reloadHandler = () => {
+        setTimeout(function () {
+            document.location.reload();
+        }, 2000);
+    };
+
     formOnChangeHandler = (event) => {
         const name = event.target.name;
         this.setState({[name]: event.target.value});
+    };
+
+    handleImageChange = (e) => {
+        this.setState({
+            form_image: e.target.files[0]
+        })
     };
 
     getLocations = () => {
@@ -142,8 +156,9 @@ class Locations extends Component {
                 this.setState({
                     showAlert: true,
                     alertType: 'alert alert-success',
-                    alertText: 'Location successfully deleted!',
+                    alertText: 'Location successfully deleted! Reloading...',
                 });
+                this.reloadHandler();
             })
             .catch(res => {
                 // Error-Message ???
@@ -151,36 +166,49 @@ class Locations extends Component {
     };
 
     sendCreateEdit = () => {
-        let data = {
-            name: this.state.form_title,
-            address: this.state.form_address,
-            description: this.state.form_description,
-            imagename: this.state.form_image,
-            fk_user: AuthentificationService.getUserId(),
-        };
+        // let data = {
+        //     name: this.state.form_title,
+        //     address: this.state.form_address,
+        //     description: this.state.form_description,
+        //     image: this.state.form_image,
+        //     fk_user: AuthentificationService.getUserId(),
+        // };
+
+        let form_data = new FormData();
+        form_data.append('file', this.state.form_image, this.state.form_image.name);
+        form_data.append('name', this.state.form_title);
+        form_data.append('address', this.state.form_address);
+        form_data.append('description', this.state.form_description);
+        form_data.append('fk_user', AuthentificationService.getUserId());
 
         if (this.state.form_type === 'new') {
-            axios.post('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations', {data})
+            axios.post('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations', form_data, {headers: {'content-type': 'multipart/form-data'}})
                 .then(res => {
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
-                        alertText: 'Location successfully created!',
+                        alertText: 'Location successfully created! Reloading...',
                     });
+                    document.getElementById('modalCloseButton').click();
+                    this.reloadHandler();
                 })
                 .catch(res => {
+                    document.getElementById('modalCloseButton').click();
                     // Fehlermessage ???
                 });
         } else if (this.state.form_type === 'update') {
-            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, {data})
+            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, form_data)
                 .then(res => {
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
-                        alertText: 'Location successfully updated!',
+                        alertText: 'Location successfully updated! Reloading...',
                     });
+                    document.getElementById('modalCloseButton').click();
+                    this.reloadHandler();
                 })
                 .catch(res => {
+                    document.getElementById('modalCloseButton').click();
                     // Error-Message ????
                 });
         }
@@ -204,7 +232,7 @@ class LocationCard extends Component {
         return (
             <div className="card mb-3">
                 <img
-                    src={this.state.cardImage}
+                    src={"http://localhost:8080/images/" + this.state.cardImage}
                     className="card-img-top" alt="..."/>
                 <div className="card-body">
                     <h5 className="card-title">{this.state.cardTitle}</h5>
