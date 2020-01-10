@@ -48,6 +48,7 @@ class Navigationbar extends Component {
 
     logout = () => {
         AuthentificationService.logout();
+        window.history.replaceState('/login', 'Login', '/login');
         document.location.reload();
     }
 }
