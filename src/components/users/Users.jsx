@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 
+const imageStyle = {
+    'border-radius': '50%',
+    'max-width': '100px',
+    'max-height': '100px',
+};
+
 class Users extends Component {
 
     constructor(props) {
@@ -58,7 +64,8 @@ class UserCard extends Component {
                 <div className="card border-primary">
                     <div className="card-body text-center">
                         <p>
-                            <img src={this.state.userImage} alt=""/>
+                            <img src={"http://localhost:8080/images/" + this.state.userImage} style={imageStyle}
+                                 alt=""/>
                         </p>
                         <h4 className="card-title">{this.state.username}</h4>
                         <p>{this.state.countLocations} Locations</p>
