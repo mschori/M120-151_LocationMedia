@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import AuthentificationService from "../authentication/AuthentificationService";
 import axios from 'axios';
 
+const imageStyle = {
+    // 'max-width': '200px',
+};
+
 class Locations extends Component {
 
     constructor(props) {
@@ -93,12 +97,6 @@ class Locations extends Component {
         );
     }
 
-    reloadHandler = () => {
-        setTimeout(function () {
-            document.location.reload();
-        }, 2000);
-    };
-
     formOnChangeHandler = (event) => {
         const name = event.target.name;
         this.setState({[name]: event.target.value});
@@ -156,9 +154,9 @@ class Locations extends Component {
                 this.setState({
                     showAlert: true,
                     alertType: 'alert alert-success',
-                    alertText: 'Location successfully deleted! Reloading...',
+                    alertText: 'Location successfully deleted!',
                 });
-                this.reloadHandler();
+                this.getLocations();
             })
             .catch(res => {
                 // Error-Message ???
@@ -166,14 +164,6 @@ class Locations extends Component {
     };
 
     sendCreateEdit = () => {
-        // let data = {
-        //     name: this.state.form_title,
-        //     address: this.state.form_address,
-        //     description: this.state.form_description,
-        //     image: this.state.form_image,
-        //     fk_user: AuthentificationService.getUserId(),
-        // };
-
         let form_data = new FormData();
         form_data.append('file', this.state.form_image, this.state.form_image.name);
         form_data.append('name', this.state.form_title);
@@ -187,10 +177,10 @@ class Locations extends Component {
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
-                        alertText: 'Location successfully created! Reloading...',
+                        alertText: 'Location successfully created!',
                     });
                     document.getElementById('modalCloseButton').click();
-                    this.reloadHandler();
+                    this.getLocations();
                 })
                 .catch(res => {
                     document.getElementById('modalCloseButton').click();
@@ -202,10 +192,10 @@ class Locations extends Component {
                     this.setState({
                         showAlert: true,
                         alertType: 'alert alert-success',
-                        alertText: 'Location successfully updated! Reloading...',
+                        alertText: 'Location successfully updated!',
                     });
                     document.getElementById('modalCloseButton').click();
-                    this.reloadHandler();
+                    this.getLocations();
                 })
                 .catch(res => {
                     document.getElementById('modalCloseButton').click();
@@ -233,7 +223,7 @@ class LocationCard extends Component {
             <div className="card mb-3">
                 <img
                     src={"http://localhost:8080/images/" + this.state.cardImage}
-                    className="card-img-top" alt="..."/>
+                    className="card-img-top" alt="..." style={imageStyle}/>
                 <div className="card-body">
                     <h5 className="card-title">{this.state.cardTitle}</h5>
                     <p className="card-text">{this.state.locationAddress}</p>
