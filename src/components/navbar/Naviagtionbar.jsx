@@ -16,7 +16,7 @@ class Navigationbar extends Component {
     render() {
         return (
             <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
-                <Navbar.Brand href="#home">Location-App</Navbar.Brand>
+                <Navbar.Brand href="/">Location-App</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     {AuthentificationService.isUserLogedIn() &&
