@@ -46,8 +46,7 @@ class Login extends Component {
                 if (res.data.loginSuccessfull) {
                     let userId = res.data.id;
                     AuthentificationService.registerSuccessfullLogin(this.state.username, userId);
-                    window.history.replaceState('/locations', 'Locations', '/locations/' + userId);
-                    document.location.reload();
+                    this.props.history.push(`/locations/${userId}`);
                 } else {
                     this.setState({hasLoginFailed: true})
                 }

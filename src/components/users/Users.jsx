@@ -77,7 +77,7 @@ class UserCard extends Component {
     }
 
     goToLocations = () => {
-        window.history.replaceState('/locations', 'Locations', '/locations/' + this.state.userId);
+        window.history.replaceState(`/locations/${this.state.userId}`, 'Locations', `/locations/${this.state.userId}`);
         document.location.reload();
     }
 }

@@ -165,7 +165,11 @@ class Locations extends Component {
 
     sendCreateEdit = () => {
         let form_data = new FormData();
-        form_data.append('file', this.state.form_image, this.state.form_image.name);
+        if (this.state.form_image !== '') {
+            form_data.append('file', this.state.form_image, this.state.form_image.name);
+        } else {
+            form_data.append('file', 'empty');
+        }
         form_data.append('name', this.state.form_title);
         form_data.append('address', this.state.form_address);
         form_data.append('description', this.state.form_description);
