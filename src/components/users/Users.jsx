@@ -27,8 +27,7 @@ class Users extends Component {
                 {
                     this.state.users.map(
                         users =>
-                            <UserCard userId={users.id} username={users.username} userImage={users.imagename}
-                                      countLocations={users.countLocations}/>
+                            <UserCard userId={users.id} username={users.username} userImage={users.imagename}/>
                     )
                 }
             </div>
@@ -53,7 +52,7 @@ class UserCard extends Component {
         this.state = {
             userId: this.props.userId,
             username: this.props.username,
-            countLocations: this.props.countLocations,
+            countLocations: '',
             userImage: this.props.userImage,
         }
     }
@@ -75,6 +74,22 @@ class UserCard extends Component {
             </div>
         );
     }
+
+    componentDidMount() {
+        this.countLocations();
+    }
+
+    countLocations = () => {
+        let uid = this.state.userId;
+        axios.get('http://localhost:8080/users/' + uid + '/locations')
+            .then(res => {
+                let counter = res.data.length;
+                this.setState({countLocations: counter})
+            })
+            .catch(error => {
+                // Error-Message???
+            })
+    };
 
     goToLocations = () => {
         window.history.replaceState(`/locations/${this.state.userId}`, 'Locations', `/locations/${this.state.userId}`);

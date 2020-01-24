@@ -191,7 +191,7 @@ class Locations extends Component {
                     // Fehlermessage ???
                 });
         } else if (this.state.form_type === 'update') {
-            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, form_data)
+            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, form_data, {headers: {'content-type': 'multipart/form-data'}})
                 .then(res => {
                     this.setState({
                         showAlert: true,
@@ -199,6 +199,12 @@ class Locations extends Component {
                         alertText: 'Location successfully updated!',
                     });
                     document.getElementById('modalCloseButton').click();
+
+                    // Hack to force reload all location-cards...
+                    this.setState({
+                        locations: [],
+                    });
+
                     this.getLocations();
                 })
                 .catch(res => {
@@ -206,7 +212,7 @@ class Locations extends Component {
                     // Error-Message ????
                 });
         }
-    }
+    };
 }
 
 class LocationCard extends Component {

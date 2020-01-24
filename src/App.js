@@ -10,6 +10,7 @@ import ErrorComponent from "./components/ErrorComponent";
 import Welcome from "./components/Welcome";
 import Register from "./components/authentication/Register";
 import Login from "./components/authentication/Login";
+import AuthenticatedRoute from "./components/authentication/AuthenticatedRoute";
 
 class App extends Component {
     render() {
@@ -23,8 +24,8 @@ class App extends Component {
                             <Route path='/' exact component={Welcome}/>
                             <Route path='/register' exact component={Register}/>
                             <Route path='/login' component={Login}/>
-                            <Route path='/users' component={Users}/>
-                            <Route path='/locations/:uid' component={Locations}/>
+                            <AuthenticatedRoute path='/users' component={Users}/>
+                            <AuthenticatedRoute path='/locations/:uid' component={Locations}/>
                             <Route component={ErrorComponent}/>
                         </Switch>
                     </Router>

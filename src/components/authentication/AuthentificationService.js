@@ -6,18 +6,19 @@ class AuthenticationService {
 
     logout() {
         sessionStorage.removeItem('authenticatedUser');
+        sessionStorage.removeItem('userId');
     }
 
-    isUserLogedIn(){
+    isUserLogedIn() {
         let userItem = sessionStorage.getItem('authenticatedUser');
         return userItem !== null;
     }
 
-    getUserId(){
+    getUserId() {
         return sessionStorage.getItem('userId');
     }
 
-    authenticatedLocation(locationUserId){
+    authenticatedLocation(locationUserId) {
         return parseInt(this.getUserId()) === parseInt(locationUserId);
     }
 }
