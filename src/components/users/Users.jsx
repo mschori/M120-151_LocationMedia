@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from "axios";
+import axiosService from "../axiosService";
 
 const imageStyle = {
     'border-radius': '50%',
@@ -35,7 +35,8 @@ class Users extends Component {
     }
 
     getUsers = () => {
-        axios.get('http://localhost:8080/users')
+
+        axiosService.get('http://localhost:8080/users')
             .then(res => {
                 this.setState({users: res.data})
             })
@@ -81,7 +82,7 @@ class UserCard extends Component {
 
     countLocations = () => {
         let uid = this.state.userId;
-        axios.get('http://localhost:8080/users/' + uid + '/locations')
+        axiosService.get('http://localhost:8080/users/' + uid + '/locations')
             .then(res => {
                 let counter = res.data.length;
                 this.setState({countLocations: counter})

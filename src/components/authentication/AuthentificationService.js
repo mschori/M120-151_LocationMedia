@@ -1,12 +1,14 @@
 class AuthenticationService {
-    registerSuccessfullLogin(username, userId) {
+    registerSuccessfullLogin(username, userId, token) {
         sessionStorage.setItem('authenticatedUser', username);
         sessionStorage.setItem('userId', userId);
+        sessionStorage.setItem('token', token);
     }
 
     logout() {
         sessionStorage.removeItem('authenticatedUser');
         sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('token');
     }
 
     isUserLogedIn() {

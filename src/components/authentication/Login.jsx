@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import './AuthentificationService.js';
 import AuthentificationService from "./AuthentificationService";
-import axios from 'axios';
+import axiosService from "../axiosService";
 
 class Login extends Component {
 
@@ -41,16 +40,13 @@ class Login extends Component {
 
         let data = {username: this.state.username, password: this.state.password};
 
-        axios.post('http://localhost:8080/users/login', data)
+        axiosService.post('http://localhost:8080/authenticate', data, {})
             .then(res => {
-                if (res.data.loginSuccessfull) {
-                    let userId = res.data.id;
-                    AuthentificationService.registerSuccessfullLogin(this.state.username, userId);
-                    this.props.history.push(`/locations/${userId}`);
-                    window.location.reload();
-                } else {
-                    this.setState({hasLoginFailed: true})
-                }
+                let token = res.data.token;
+                let userId = res.data.id;
+                AuthentificationService.registerSuccessfullLogin(this.state.username, userId, token);
+                this.props.history.push(`/locations/${userId}`);
+                window.location.reload();
             })
             .catch(res => {
                 this.setState({hasLoginFailed: true})

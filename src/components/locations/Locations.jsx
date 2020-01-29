@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import AuthentificationService from "../authentication/AuthentificationService";
-import axios from 'axios';
+import axiosService from "../axiosService";
 
 const imageStyle = {
     // 'max-width': '200px',
@@ -110,7 +110,7 @@ class Locations extends Component {
 
     getLocations = () => {
         let uid = this.props.match.params.uid;
-        axios.get('http://localhost:8080/users/' + uid + '/locations')
+        axiosService.get('http://localhost:8080/users/' + uid + '/locations')
             .then(res => {
                 this.setState({locations: res.data})
             })
@@ -149,7 +149,7 @@ class Locations extends Component {
             return;
         }
 
-        axios.delete('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + locationId)
+        axiosService.delete('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + locationId)
             .then(res => {
                 this.setState({
                     showAlert: true,
@@ -176,7 +176,7 @@ class Locations extends Component {
         form_data.append('fk_user', AuthentificationService.getUserId());
 
         if (this.state.form_type === 'new') {
-            axios.post('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations', form_data, {headers: {'content-type': 'multipart/form-data'}})
+            axiosService.post('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations', form_data, {headers: {'content-type': 'multipart/form-data'}})
                 .then(res => {
                     this.setState({
                         showAlert: true,
@@ -191,7 +191,7 @@ class Locations extends Component {
                     // Fehlermessage ???
                 });
         } else if (this.state.form_type === 'update') {
-            axios.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, form_data, {headers: {'content-type': 'multipart/form-data'}})
+            axiosService.put('http://localhost:8080/users/' + AuthentificationService.getUserId() + '/locations/' + this.state.form_location_id, form_data, {headers: {'content-type': 'multipart/form-data'}})
                 .then(res => {
                     this.setState({
                         showAlert: true,

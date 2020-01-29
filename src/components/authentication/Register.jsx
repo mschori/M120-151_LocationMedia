@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from "axios";
+import axiosService from "../axiosService";
 
 class Register extends Component {
 
@@ -70,7 +70,7 @@ class Register extends Component {
         form_data.append('username', this.state.username);
         form_data.append('password', this.state.password1);
 
-        axios.post('http://localhost:8080/users', form_data, {headers: {'content-type': 'multipart/form-data'}})
+        axiosService.post('http://localhost:8080/users', form_data, {headers: {'content-type': 'multipart/form-data'}})
             .then(res => {
                 this.setState({
                     showAlert: true,
