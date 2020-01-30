@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import AuthentificationService from "../authentication/AuthentificationService";
 import axiosService from "../axiosService";
 
-const imageStyle = {
-    // 'max-width': '200px',
-};
-
 class Locations extends Component {
 
     constructor(props) {
@@ -225,15 +221,18 @@ class LocationCard extends Component {
             cardTitle: this.props.cardTitle,
             locationAddress: this.props.locationAddress,
             cardImage: this.props.cardImage,
+            base64Image: '',
         };
+    }
+
+    componentDidMount() {
+        this.getImage();
     }
 
     render() {
         return (
             <div className="card mb-3">
-                <img
-                    src={"http://localhost:8080/images/" + this.state.cardImage}
-                    className="card-img-top" alt="..." style={imageStyle}/>
+                <img src={this.state.base64Image} className="card-img-top" alt="..."/>
                 <div className="card-body">
                     <h5 className="card-title">{this.state.cardTitle}</h5>
                     <p className="card-text">{this.state.locationAddress}</p>
@@ -248,6 +247,16 @@ class LocationCard extends Component {
             </div>
         );
     }
+
+    getImage = () => {
+        let url = "http://localhost:8080/images/" + this.state.cardImage;
+        axiosService.get(url, {}, {})
+            .then(res => {
+                this.setState({
+                    base64Image: res.data,
+                });
+            });
+    };
 
     handleEditClick = () => {
         this.props.editLocation(this.state.locationId, this.state.cardTitle, this.state.locationAddress, this.state.cardText);

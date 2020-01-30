@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axiosService from "../axiosService";
 
 const imageStyle = {
-    'border-radius': '50%',
-    'max-width': '100px',
-    'max-height': '100px',
+    'border-radius': '25%',
+    'max-width': '200px',
+    'max-height': '200px',
 };
 
 class Users extends Component {
@@ -55,6 +55,7 @@ class UserCard extends Component {
             username: this.props.username,
             countLocations: '',
             userImage: this.props.userImage,
+            base64Image: ''
         }
     }
 
@@ -64,8 +65,7 @@ class UserCard extends Component {
                 <div className="card border-primary">
                     <div className="card-body text-center">
                         <p>
-                            <img src={"http://localhost:8080/images/" + this.state.userImage} style={imageStyle}
-                                 alt=""/>
+                            <img src={this.state.base64Image} style={imageStyle} alt=""/>
                         </p>
                         <h4 className="card-title">{this.state.username}</h4>
                         <p>{this.state.countLocations} Locations</p>
@@ -78,7 +78,18 @@ class UserCard extends Component {
 
     componentDidMount() {
         this.countLocations();
+        this.getImage();
     }
+
+    getImage = () => {
+        let url = "http://localhost:8080/images/" + this.state.userImage;
+        axiosService.get(url, {}, {})
+            .then(res => {
+                this.setState({
+                    base64Image: res.data,
+                });
+            });
+    };
 
     countLocations = () => {
         let uid = this.state.userId;
